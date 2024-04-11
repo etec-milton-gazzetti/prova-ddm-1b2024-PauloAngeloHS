@@ -1,18 +1,28 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 
 import Router from "@components/router";
 import Fonts from "@conponets/fonts";
 
-export default function App() {
-  return <Router />;
+function Loading() {
+  return (
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>Loading...</Text>
+    </View>
+  );
+}
+async function LoadFonts(finished) {
+  await Fonts();
+  finished(true);
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
+export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  if (!fontsLoaded) {
+    LoadFonts(setFontsLoaded);
+
+    return <Loading />;
+  }
+
+  return <Router />;
+}
